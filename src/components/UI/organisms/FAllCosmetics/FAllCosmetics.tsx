@@ -7,6 +7,9 @@ import { toast } from 'react-toastify'
 import { Pagination, Select } from '@mantine/core'
 import { useQuery } from '@tanstack/react-query'
 
+import Error from '@molecules/Error'
+import Loading from '@molecules/Loading'
+
 import allCosmeticsFn from '@api/allCosmetics'
 
 import { CartItemShop, paginationArray, removeDuplicateObjects } from '@core/utils/common'
@@ -49,12 +52,20 @@ const AllCosmetics = () => {
     }, [isSuccess, selectItems])
 
     if (isLoading) {
-        return <div className='w-full flex items-center justify-center'>Loading</div>
+        return (
+            <div className='w-full flex items-center justify-center'>
+                <Loading />
+            </div>
+        )
     }
 
     if (isError) {
         toast.error(error?.message)
-        return <div className='w-full flex items-center justify-center'>Error</div>
+        return (
+            <div className='w-full flex items-center justify-center'>
+                <Error />
+            </div>
+        )
     }
 
     if (isSuccess) {

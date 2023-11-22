@@ -5,6 +5,9 @@ import React from 'react'
 import { toast } from 'react-toastify'
 import { useQuery } from '@tanstack/react-query'
 
+import Error from '@molecules/Error'
+import Loading from '@molecules/Loading'
+
 import newCosmeticsFn from '@api/newCosmetics'
 
 import { CartItemShop } from '@core/utils/common'
@@ -22,12 +25,20 @@ const FNewCosmetics = () => {
     })
 
     if (isLoading) {
-        return <div className='w-full flex items-center justify-center'>Loading</div>
+        return (
+            <div className='w-full flex items-center justify-center'>
+                <Loading />
+            </div>
+        )
     }
 
     if (isError) {
         toast.error(error?.message)
-        return <div className='w-full flex items-center justify-center'>Error</div>
+        return (
+            <div className='w-full flex items-center justify-center'>
+                <Error />
+            </div>
+        )
     }
 
     if (isSuccess) {

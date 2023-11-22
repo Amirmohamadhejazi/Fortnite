@@ -4,6 +4,9 @@ import { type FC } from 'react'
 import { toast } from 'react-toastify'
 import { useQuery } from '@tanstack/react-query'
 
+import Error from '@molecules/Error'
+import Loading from '@molecules/Loading'
+
 import currentShopFn from '@api/shop'
 
 import { CartItemShop } from '@core/utils/common'
@@ -19,13 +22,22 @@ const FShop: FC = () => {
         retryOnMount: false,
         staleTime: 1200,
     })
+
     if (isLoading) {
-        return <div className='w-full flex items-center justify-center'>Loading</div>
+        return (
+            <div className='w-full flex items-center justify-center'>
+                <Loading />
+            </div>
+        )
     }
 
     if (isError) {
         toast.error(error?.message)
-        return <div className='w-full flex items-center justify-center'>Error</div>
+        return (
+            <div className='w-full flex items-center justify-center'>
+                <Error />
+            </div>
+        )
     }
 
     if (isSuccess) {

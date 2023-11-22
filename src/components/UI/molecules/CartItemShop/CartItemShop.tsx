@@ -3,7 +3,6 @@ import React from 'react'
 import { format } from 'date-fns'
 
 import type TCriticalAny from '@core/types/critical-any/types'
-// import { type TItemsShop } from '@/app/types/type'
 
 const CartItemShop = ({
     dataItem = {
@@ -26,7 +25,6 @@ const CartItemShop = ({
     dataItem?: TCriticalAny
 }) => {
     return (
-        // <Link href={`./fortnite/${dataItem.id}`}>
         <div className='flex flex-col rounded-md overflow-hidden p-1  shadow-lg bg-gray-200 relative'>
             <div
                 className=' rounded-md min-h-[150px] object-cover bg-no-repeat'
