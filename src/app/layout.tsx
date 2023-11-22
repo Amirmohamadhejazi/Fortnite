@@ -1,7 +1,7 @@
 import { type FC } from 'react'
 import { type Metadata } from 'next'
 
-import '@styles/globals.css'
+import { Providers } from '@partials/providers'
 
 export const metadata: Metadata = {
     title: 'Fortnite',
@@ -10,7 +10,9 @@ export const metadata: Metadata = {
 const RootLayout: FC<{ children: JSX.Element }> = ({ children }) => {
     return (
         <html>
-            <body>{children}</body>
+            <body dir='ltr'>
+                <Providers>{children}</Providers>
+            </body>
         </html>
     )
 }

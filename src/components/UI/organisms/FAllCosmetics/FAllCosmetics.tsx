@@ -1,147 +1,105 @@
-// 'use client'
-// import React, { useEffect, useState } from 'react'
-// import { toast } from 'react-toastify'
-// import { Pagination, Select } from '@mantine/core'
-// import { CartItemShopFort, Error, Loading, NoData } from '@/app/components'
-// import { bgChecker, paginateArray, removeDuplicateObjects } from '@/app/components/helper'
-// import { type TItemsShop } from '@/app/types/type'
-// import { fortniteApiCosmeticsAll } from '@/core/service/api'
-// import { useQuery } from '@tanstack/react-query'
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-// const AllCosmetics = () => {
-//     const [convertedData, setConvertedData] = useState([])
-//     // const [convertedData, setConvertedData] = useState<TItemsShop[]>([])
-//     const [paginationItems, setPaginationItems] = useState<number>(1)
-//     const [pagesItems, setPagesItems] = useState<number>(0)
-//     const [selectItems, setSelectItems] = useState<string>('outfit')
-//     const [selectDataBoxItems, setSelectDataBoxItems] = useState<string[]>([])
+'use client'
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+import { Pagination, Select } from '@mantine/core'
+import { useQuery } from '@tanstack/react-query'
 
-//     const {
-//         isLoading,
-//         isError,
-//         error,
-//         isSuccess,
-//         data: dataAll,
-//     } = useQuery({
-//         queryKey: ['fortnite'],
+import allCosmeticsFn from '@api/allCosmetics'
 
-//         queryFn: () => fortniteApiCosmeticsAll(),
+import { CartItemShop, paginationArray, removeDuplicateObjects } from '@core/utils/common'
 
-//         retry: 1,
-//         retryOnMount: false,
-//         staleTime: 1200,
-//     })
+import calculator from './resources'
 
-//     useEffect(() => {
-//         if (isSuccess === true) {
-//             const { data } = dataAll
-//             if (data) {
-//                 const selectDataBoxData = removeDuplicateObjects(data.map((items: any) => items?.type?.value))
+const AllCosmetics = () => {
+    const [convertedData, setConvertedData] = useState<any[]>([])
+    const [paginationItems, setPaginationItems] = useState<number>(1)
+    const [pagesItems, setPagesItems] = useState<number>(0)
+    const [selectItems, setSelectItems] = useState<string>('outfit')
+    const [selectDataBoxItems, setSelectDataBoxItems] = useState<string[]>([])
 
-//                 const convertedData = data
-//                     .filter((itemsForFilter: any) => itemsForFilter.type.value === selectItems)
-//                     .map((itemsData: any) => {
-//                         return {
-//                             name: itemsData.name,
-//                             description: itemsData.description,
-//                             type: itemsData.type.value,
-//                             rarity: {
-//                                 name: itemsData.rarity.value,
-//                                 // color: colorChecker(itemsData.rarity.value),
-//                                 bg: bgChecker(itemsData.rarity.value),
-//                             },
-//                             shopHistory: itemsData.shopHistory || null,
-//                             images: itemsData.images.icon,
-//                             added: itemsData.added,
-//                             id: itemsData.id,
-//                         }
-//                     })
-//                 const pages = Math.ceil(convertedData.length / 50)
+    const { isLoading, isError, error, isSuccess, data } = useQuery({
+        queryKey: ['fortnite'],
 
-//                 setConvertedData(convertedData)
-//                 setPagesItems(pages)
-//                 setSelectDataBoxItems(selectDataBoxData)
-//             }
-//         }
-//     }, [isSuccess, selectItems])
+        queryFn: () => allCosmeticsFn(),
 
-//     if (isLoading) {
-//         return (
-//             <div className='w-full flex items-center justify-center'>
-//                 <Loading />
-//             </div>
-//         )
-//     }
+        retry: 1,
+        retryOnMount: false,
+        staleTime: 1200,
+    })
 
-//     if (isError) {
-//         toast.error(error?.message)
-//         return (
-//             <div className='w-full flex items-center justify-center'>
-//                 <Error />
-//             </div>
-//         )
-//     }
+    useEffect(() => {
+        if (isSuccess === true) {
+            if (data) {
+                const selectDataBoxData = removeDuplicateObjects(data.map((items: any) => items?.type?.value))
 
-//     if (isSuccess) {
-//         const { data } = dataAll
+                const { convertedData } = calculator(
+                    data.filter((itemsForFilter: any) => itemsForFilter.type.value === selectItems)
+                )
 
-//         if (data.length === 0) {
-//             return (
-//                 <div className='w-full flex items-center justify-center'>
-//                     <NoData text='No Data!' />
-//                 </div>
-//             )
-//         }
+                const pages = Math.ceil(convertedData.length / 50)
 
-//         const paginatedData = paginateArray(convertedData, 50, paginationItems)
+                setConvertedData(convertedData)
+                setPagesItems(pages)
+                setSelectDataBoxItems(selectDataBoxData)
+            }
+        }
+    }, [isSuccess, selectItems])
 
-//         return (
-//             <div className='flex flex-col gap-2 '>
-//                 <div className='flex items-center flex-wrap gap-2 justify-between'>
-//                     <span className='font-bold text-xl '>All Items</span>
+    if (isLoading) {
+        return <div className='w-full flex items-center justify-center'>Loading</div>
+    }
 
-//                     {pagesItems > 1 && (
-//                         <div className='flex items-center justify-center'>
-//                             <Pagination
-//                                 total={pagesItems}
-//                                 value={paginationItems}
-//                                 onChange={setPaginationItems}
-//                                 color='orange'
-//                                 size='sm'
-//                             />
-//                         </div>
-//                     )}
-//                 </div>
-//                 <hr />
-//                 <div className='flex flex-col'>
-//                     <div className='flex justify-end'>
-//                         <Select
-//                             size='sm'
-//                             placeholder='Sort by:'
-//                             data={selectDataBoxItems}
-//                             onChange={(e) => {
-//                                 setSelectItems(e)
-//                                 setPaginationItems(1)
-//                             }}
-//                             value={selectItems}
-//                             searchable
-//                         />
-//                     </div>
-//                 </div>
-//                 <div className='grid  xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mb-5  gap-3 rounded-xl max-h-[500px] overflow-auto'>
-//                     {paginatedData?.map((items: TItemsShop) => <CartItemShopFort dataItem={items} key={items.id} />)}
-//                 </div>
-//             </div>
-//         )
-//     }
-// }
+    if (isError) {
+        toast.error(error?.message)
+        return <div className='w-full flex items-center justify-center'>Error</div>
+    }
 
-// export default AllCosmetics
-
-import React from 'react'
-
-const FAllCosmetics = () => {
-    return <div>FAllCosmetics</div>
+    if (isSuccess) {
+        if (data.length === 0) {
+            return <div className='w-full flex items-center justify-center'>NoData</div>
+        }
+        const paginatedData = paginationArray(convertedData, 50, paginationItems)
+        return (
+            <div className='flex flex-col gap-2 '>
+                <div className='flex items-center flex-wrap gap-2 justify-between'>
+                    <span className='font-bold text-xl '>All Items</span>
+                    {pagesItems > 1 && (
+                        <div className='flex items-center justify-center'>
+                            <Pagination
+                                total={pagesItems}
+                                value={paginationItems}
+                                onChange={setPaginationItems}
+                                color='orange'
+                                size='sm'
+                            />
+                        </div>
+                    )}
+                </div>
+                <hr />
+                <div className='flex flex-col'>
+                    <div className='flex justify-end'>
+                        <Select
+                            size='sm'
+                            placeholder='Sort by:'
+                            data={selectDataBoxItems}
+                            onChange={(e: any) => {
+                                setSelectItems(e)
+                                setPaginationItems(1)
+                            }}
+                            value={selectItems}
+                            searchable
+                        />
+                    </div>
+                </div>
+                <div className='grid  xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mb-5  gap-3 rounded-xl max-h-[500px] overflow-auto'>
+                    {paginatedData?.map((items) => <CartItemShop dataItem={items} key={items.id} />)}
+                </div>
+            </div>
+        )
+    }
 }
 
-export default FAllCosmetics
+export default AllCosmetics
