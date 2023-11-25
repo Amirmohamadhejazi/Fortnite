@@ -21,19 +21,14 @@ const FortniteLayout: FC<{ children: JSX.Element }> = ({ children }) => {
                 <Tabs value={pathname.split('/')[1] ? pathname.split('/')[1] : 'shop'}>
                     <Tabs.List>
                         {tabs.map((itemsTab: string, index: number) => (
-                            <Tabs.Tab
-                                key={index}
-                                value={itemsTab}
-                                onClick={() => router.push(`${itemsTab}`)}
-                                // disabled={pathname.split('/')[1] === itemsTab}
-                            >
+                            <Tabs.Tab key={index} value={itemsTab} onClick={() => router.push(`${itemsTab}`)}>
                                 {itemsTab}
                             </Tabs.Tab>
                         ))}
                     </Tabs.List>
                 </Tabs>
             </div>
-            {children}
+            <div className='flex items-center justify-center mt-5'>{children}</div>
         </div>
     )
 }
