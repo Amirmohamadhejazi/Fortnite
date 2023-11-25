@@ -11,6 +11,8 @@ import Loading from '@molecules/Loading'
 
 import newsApiFn from '@api/news'
 
+import calculator from './resources'
+
 const FNews: FC = () => {
     const { isLoading, isError, error, isSuccess, data } = useQuery({
         queryKey: ['fortniteBattleRoyalNews'],
@@ -42,14 +44,7 @@ const FNews: FC = () => {
 
     if (isSuccess) {
         const { br } = data
-        const dataNewsBattleRoyal = br.motds.map((itemsNews: any) => {
-            return {
-                title: itemsNews.title,
-                body: itemsNews.body,
-                image: itemsNews.image,
-                id: itemsNews.id,
-            }
-        })
+        const { convertedData } = calculator(br.motds)
 
         return (
             <div className='flex flex-col gap-2 '>
@@ -57,7 +52,7 @@ const FNews: FC = () => {
                     <span className='font-bold text-xl '>News BattleRoyal</span>
                     <hr />
                     <div className='grid  xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4   gap-2'>
-                        {dataNewsBattleRoyal.map((itemsNews: any) => (
+                        {convertedData.map((itemsNews: any) => (
                             <div className='flex flex-col p-1 gap-2 bg-slate-200 rounded-md' key={itemsNews.id}>
                                 <img src={itemsNews.image} className='w-full object-cover' alt='' />
                                 <div className='flex flex-col gap-2 max-h-[120px] overflow-auto'>

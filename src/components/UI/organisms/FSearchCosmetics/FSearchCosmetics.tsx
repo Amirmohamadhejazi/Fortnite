@@ -11,7 +11,9 @@ import NoData from '@molecules/NoData'
 
 import cosmeticsSearchApiFn from '@api/searchCosmetics'
 
-import { bgChecker, CartItemShop } from '@core/utils/common'
+import { CartItemShop } from '@core/utils/common'
+
+import calculator from './resources'
 
 const FSearchCosmetics: FC = () => {
     const formRef = useRef<any>(null)
@@ -45,7 +47,6 @@ const FSearchCosmetics: FC = () => {
         }
 
         if (isError) {
-            // toast.error(error?.message);
             return (
                 <div className='w-full flex items-center justify-center'>
                     <Error text={error.response.data.error} />
@@ -62,26 +63,13 @@ const FSearchCosmetics: FC = () => {
                 )
             }
 
-            const convertData: any[] = data.map((itemsSearch: any) => {
-                return {
-                    name: itemsSearch.name,
-                    description: itemsSearch.description,
-                    type: itemsSearch.type.value,
-                    rarity: {
-                        name: itemsSearch.rarity.value,
-                        bg: bgChecker(itemsSearch.rarity.value),
-                    },
-                    shopHistory: itemsSearch.shopHistory || null,
-                    images: itemsSearch.images.icon,
-                    added: itemsSearch.added,
-                    id: itemsSearch.id,
-                }
-            })
+            const { convertedData } = calculator(data)
+
             return (
                 <div className='flex flex-col'>
                     <hr className='my-5' />
                     <div className='grid  xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-5   gap-3 rounded-xl '>
-                        {convertData.map((itemsConverted) => (
+                        {convertedData?.map((itemsConverted) => (
                             <CartItemShop dataItem={itemsConverted} key={itemsConverted.id} />
                         ))}
                     </div>
