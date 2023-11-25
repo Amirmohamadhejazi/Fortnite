@@ -5,3 +5,17 @@
 
 /* Base */
 @import './base/base.css';
+
+::-webkit-scrollbar {
+    width: 3px;
+}
+
+::-webkit-scrollbar-track {
+    /* Customize the scrollbar track */
+    background-color: white;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #f4bf96;
+    /* Customize the scrollbar thumb */
+}
